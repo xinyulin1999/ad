@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ad.mapper.AdMapper">
+
+    <resultMap type="com.example.ad.domain.Ad" id="AdResultMap">
+        <id property="id" column="id" />
+        <result property="link" column="link" />
+        <result property="name" column="name" />
+        <result property="content" column="content" />
+        <result property="picUrl" column="pic_url" />
+        <result property="beDefault" column="is_default" />
+        <result property="beEnable" column="is_enabled" />
+        <result property="startTime" column="start_time" />
+        <result property="endTime" column="end_time" />
+        <result property="gmtCreate" column="gmt_create" />
+        <result property="gmtModified" column="gmt_modified" />
+    </resultMap>
+
+    <select id="userFindAd" resultMap="AdResultMap">
+         select id,
+               link,
+                name,
+                content,
+                pic_url,
+                is_default,
+                is_enabled,
+                start_time,
+               end_time,
+                gmt_create,
+                gmt_modified
+                from oomall_ad where is_deleted=0
+    </select>
+    <select id="adminFindAdList" resultType="com.example.ad.domain.Ad">
+        select  id,
+        link,
+        name,
+        content,
+        pic_url,
+        is_default,
+        is_enabled,
+        start_time,
+        end_time,
+        gmt_create,
+        gmt_modified
+        from oomall_ad
+        where
+        <if test="adTitle!=null">
+            name=#{adTitle} and
+        </if>
+        <if test="adContent!=null">
+            content=#{adContent} and
+        </if>
+        is_deleted=0
+    </select>
+
+    <select id="adminFindAd" resultType="com.example.ad.domain.Ad">
+     select id,
+               link,
+                name,
+                content,
+                pic_url,
+                is_default,
+                is_enabled,
+                start_time,
+               end_time,
+                gmt_create,
+                gmt_modified
+                from oomall_ad where id=#{id}
+    </select>
+    <insert id="adminCreateAad" parameterType="com.example.ad.domain.Ad" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into oomall_ad(
+                link,
+                pic_url,
+                name,
+                content,
+                is_default,
+                is_enabled,
+                start_time,
+                end_time,
+                is_deleted
+        )values(
+            #{link},
+            #{picUrl},
+            #{name},
+            #{content},
+            #{beDefault},
+            #{beEnable},
+            #{startTime},
+            #{endTime},
+            0
+        )
+    </insert>
+    <update id="adminUpdateAd" parameterType="com.example.ad.domain.Ad">
+        update oomall_ad
+        set link=#{link},
+            pic_url=#{picUrl},
+            name= #{name},
+            content=#{content},
+            is_default=#{beDefault},
+            is_enabled=#{beEnable},
+            start_time=#{startTime},
+            end_time=#{endTime}
+        where id=#{id}
+    </update>
+    <update id="adminDeleteAd">
+        update oomall_ad
+        set is_deleted = 1
+        where id=#{id} and is_deleted=0
+    </update>
+
+</mapper>
